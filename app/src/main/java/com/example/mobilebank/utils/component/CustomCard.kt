@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SavingCard(modifier: Modifier, onClick: () -> Unit, textNumber: String, balance: String, textName: String, eyeClick: () -> Unit, isVisible: Boolean) {
     Card(
-        modifier = modifier.size(width = 320.dp, height = 200.dp),
+        modifier = modifier.size(width = 320.dp, height = 100.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F4F6))
     ) {
         Column(verticalArrangement = Arrangement.SpaceBetween) {
@@ -29,14 +29,42 @@ fun SavingCard(modifier: Modifier, onClick: () -> Unit, textNumber: String, bala
             )
             BalanceText(
                 balance = balance,
-                modifier = Modifier.padding(start = 20.dp, top = 20.dp),
+                modifier = Modifier.padding(start = 20.dp),
                 isVisible = isVisible,
                 eyeClick = eyeClick
             )
-            Row(modifier = Modifier.padding(start = 20.dp, top = 20.dp)) {
+//            Row(modifier = Modifier.padding(start = 20.dp, top = 20.dp)) {
+//                CommonButton(onClick = {}, modifier = Modifier, label = "Pindah Dana")
+//                Spacer(Modifier.width(10.dp))
+//                CommonButton(onClick = {}, modifier = Modifier, label = "Qris")
+//            }
+        }
+    }
+}
+
+@Composable
+fun SplitSavingCard(modifier: Modifier, balance: String, textName: String, eyeClick: () -> Unit, isVisible: Boolean) {
+    Card(
+        modifier = modifier.size(width = 320.dp, height = 180.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F4F6))
+    ) {
+        Column(verticalArrangement = Arrangement.SpaceBetween) {
+            AccountNameText(
+                modifier = Modifier,
+                textName = textName
+//                textNumber = textNumber,
+//                onClick = onClick
+            )
+            BalanceText(
+                balance = balance,
+                modifier = Modifier.padding(start = 20.dp, top = 10.dp),
+                isVisible = isVisible,
+                eyeClick = eyeClick
+            )
+            Row(modifier = Modifier.padding(start = 20.dp, top = 10.dp)) {
                 CommonButton(onClick = {}, modifier = Modifier, label = "Pindah Dana")
-                Spacer(Modifier.width(10.dp))
-                CommonButton(onClick = {}, modifier = Modifier, label = "Qris")
+//                Spacer(Modifier.width(10.dp))
+//                CommonButton(onClick = {}, modifier = Modifier, label = "Qris")
             }
         }
     }

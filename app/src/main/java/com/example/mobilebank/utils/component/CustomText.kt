@@ -24,6 +24,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@Composable
+fun AccountNameText(
+    textName: String,
+//    textNumber: String,
+    modifier: Modifier = Modifier
+) {
+    Row(modifier = modifier.padding(top = 15.dp, start = 20.dp)) {
+        Text(
+            text = textName, style = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF212821),
+            )
+        )
+//        Text(
+//            text = " - ", style = TextStyle(
+//                fontSize = 15.sp,
+//                fontWeight = FontWeight.Bold,
+//                color = Color(0xFF212821),
+//            )
+//        )
+//        Text(
+//            text = textNumber, style = TextStyle(
+//                fontSize = 15.sp,
+//                fontWeight = FontWeight.Light,
+//                color = Color(0xFF212821),
+//            )
+//        )
+    }
+}
 
 @Composable
 fun AccountNameNumberText(
@@ -91,7 +121,7 @@ fun BalanceText(
             modifier = Modifier.weight(3f)
         )
         EyeIconButton(onClick = eyeClick, modifier = Modifier, isVisible = isVisible)
-        Spacer(modifier = modifier.width(5.dp).weight(1f))
+        Spacer(modifier = modifier.width(20.dp).weight(1f))
     }
 }
 

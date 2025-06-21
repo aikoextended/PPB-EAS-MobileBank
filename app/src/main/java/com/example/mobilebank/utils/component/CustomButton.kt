@@ -66,7 +66,7 @@ fun CommonButton(onClick: () -> Unit, modifier: Modifier = Modifier, label: Stri
     ) {
         Text(
             text = label, style = TextStyle(
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF212821)
             )
