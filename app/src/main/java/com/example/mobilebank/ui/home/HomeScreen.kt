@@ -33,6 +33,7 @@ import com.example.mobilebank.R
 import com.example.mobilebank.utils.actions.setClipboard
 import com.example.mobilebank.utils.component.*
 import com.example.mobilebank.utils.helper.BankingDataStore
+import com.example.mobilebank.utils.helper.SavingItem
 import com.example.mobilebank.utils.helper.ThousandSeparatorTransformation
 import kotlinx.coroutines.launch
 
@@ -48,8 +49,8 @@ fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
     val savingsList = remember {
         mutableStateListOf(
-            Pair("HP Baru", "1.000.000"),
-            Pair("Dana Darurat", "500.000"),
+            SavingItem("HP Baru", 1_000_000),
+            SavingItem("Dana Darurat", 500_000),
         )
     }
 
@@ -70,6 +71,11 @@ fun HomeScreen(
 
     var newBalanceFormatted by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    var showAddDialog by remember { mutableStateOf(false) }
+    var selectedSavingIndex by remember { mutableIntStateOf(-1) }
+    var addAmountFormatted by remember { mutableStateOf("") }
+    var addError by remember { mutableStateOf<String?>(null) }
 
 
     Column(
@@ -177,7 +183,7 @@ fun HomeScreen(
             contentPadding = PaddingValues(end = nextCardVisibleWidth),
             pageSpacing = pageSpacing
         ) { page ->
-            val (name, balance) = savingsList[page]
+            val item = savingsList[page]
             Column(
                 modifier = Modifier
                     .padding(start = 20.dp, end = 10.dp, top = 10.dp, bottom = 10.dp)
@@ -185,13 +191,17 @@ fun HomeScreen(
                 // Card greenSaving dipindah ke bawah
                 SplitSavingCard(
                     modifier = Modifier,
-                    textName = name,
-                    balance = balance,
+                    textName = item.name,
+                    balance = "%,d".format(item.balance).replace(',', '.'),
                     isVisible = isVisible,
                     eyeClick = {
                         coroutineScope.launch {
                             BankingDataStore.saveIsVisible(context, !isVisible)
                         }
+                    },
+                    onAddBalance = {
+                        selectedSavingIndex = page
+                        showAddDialog = true
                     }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -252,8 +262,7 @@ fun HomeScreen(
                             }
                             else -> {
                                 // Lolos semua validasi
-                                val formatted = "%,d".format(numeric).replace(',', '.')
-                                savingsList.add(Pair(newName, formatted))
+                                savingsList.add(SavingItem(newName, numeric))
                                 mainBalance -= numeric
                                 newName = ""
                                 newBalanceFormatted = ""
@@ -277,6 +286,63 @@ fun HomeScreen(
                 }
             )
         }
+        if (showAddDialog && selectedSavingIndex != -1) {
+            AlertDialog(
+                onDismissRequest = {
+                    showAddDialog = false
+                    addAmountFormatted = ""
+                    addError = null
+                },
+                title = { Text("Tambah Dana ke ${savingsList[selectedSavingIndex].name}") },
+                text = {
+                    Column {
+                        OutlinedTextField(
+                            value = addAmountFormatted,
+                            onValueChange = {
+                                addAmountFormatted = it.filter { ch -> ch.isDigit() }
+                            },
+                            label = { Text("Nominal Tambahan") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            visualTransformation = ThousandSeparatorTransformation(),
+                            isError = addError != null
+                        )
+                        if (addError != null) {
+                            Text(addError!!, color = Color.Red, style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                },
+                confirmButton = {
+                    Button(onClick = {
+                        val cleaned = addAmountFormatted.replace(".", "")
+                        val amount = cleaned.toIntOrNull() ?: 0
+
+                        when {
+                            amount <= 0 -> addError = "Nominal tidak valid"
+                            amount > mainBalance -> addError = "Saldo utama tidak mencukupi"
+                            else -> {
+                                savingsList[selectedSavingIndex].balance += amount
+                                mainBalance -= amount
+                                showAddDialog = false
+                                addAmountFormatted = ""
+                                addError = null
+                            }
+                        }
+                    }) {
+                        Text("Simpan")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showAddDialog = false
+                        addAmountFormatted = ""
+                        addError = null
+                    }) {
+                        Text("Batal")
+                    }
+                }
+            )
+        }
+
 
 
 

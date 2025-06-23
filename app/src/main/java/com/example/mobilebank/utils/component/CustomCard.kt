@@ -43,7 +43,7 @@ fun SavingCard(modifier: Modifier, onClick: () -> Unit, textNumber: String, bala
 }
 
 @Composable
-fun SplitSavingCard(modifier: Modifier, balance: String, textName: String, eyeClick: () -> Unit, isVisible: Boolean) {
+fun SplitSavingCard(modifier: Modifier, balance: String, textName: String, eyeClick: () -> Unit, isVisible: Boolean, onAddBalance: () -> Unit) {
     Card(
         modifier = modifier.size(width = 320.dp, height = 180.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF3F4F6))
@@ -62,7 +62,7 @@ fun SplitSavingCard(modifier: Modifier, balance: String, textName: String, eyeCl
                 eyeClick = eyeClick
             )
             Row(modifier = Modifier.padding(start = 20.dp, top = 10.dp)) {
-                CommonButton(onClick = {}, modifier = Modifier, label = "Pindah Dana")
+                CommonButton(onClick = { onAddBalance() }, modifier = Modifier, label = "Tambah Dana")
 //                Spacer(Modifier.width(10.dp))
 //                CommonButton(onClick = {}, modifier = Modifier, label = "Qris")
             }
